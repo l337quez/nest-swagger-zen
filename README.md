@@ -16,7 +16,7 @@ Al no estar en el registro público todavía, puedes instalar la librería en tu
 ```bash
 npm install nest-swagger-zen
 ```
-*(También puedes enlazarlo usando `npm link` o subirlo a NPM).*
+
 
 ## Uso 🚀
 
@@ -72,7 +72,7 @@ Ahora, importa este decorador en tu controller. Fíjate cómo la lógica de tu e
 ```typescript
 // user.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
-import { CreateUserDocs } from './swagger/user.swagger'; // <--- Importas tu doc!
+import { CreateUserDocs } from './swagger/user.swagger'; 
 import { CreateUserDto } from './dto/user.dto';
 
 @Controller('users')
