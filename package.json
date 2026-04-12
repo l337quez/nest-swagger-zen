@@ -1,0 +1,33 @@
+{
+  "name": "nest-swagger-zen",
+  "version": "1.0.0",
+  "description": "A stylish, generalized library to prevent Swagger from cluttering NestJS controllers.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "nestjs",
+    "swagger",
+    "decorators",
+    "zen"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/swagger": "^7.0.0",
+    "@types/node": "^20.0.0",
+    "reflect-metadata": "^0.1.0",
+    "rxjs": "^7.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^8.0.0 || ^9.0.0 || ^10.0.0",
+    "@nestjs/swagger": "^6.0.0 || ^7.0.0"
+  }
+}
