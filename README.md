@@ -1,4 +1,4 @@
-# Nest Swagger Zen 🧘
+# Nest Swagger Zen 🐼
 
 ![Nest Swagger Zen Portada](./assets/nest-swagger-zen.png)
 
@@ -14,7 +14,7 @@ Una librería genérica y estilizada para NestJS que te ayudará a limpiar tus c
 Al no estar en el registro público todavía, puedes instalar la librería en tus proyectos Nest referenciando rutas relativas o absolutas:
 
 ```bash
-npm install /ruta/absoluta/a/nest-swagger-zen
+npm install nest-swagger-zen
 ```
 *(También puedes enlazarlo usando `npm link` o subirlo a NPM).*
 
