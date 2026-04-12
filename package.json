@@ -1,5 +1,5 @@
 {
-  "name": "nest-swagger-zen",
+  "name": "@l337quez/nest-swagger-zen",
   "version": "1.0.0",
   "description": "A stylish, generalized library to prevent Swagger from cluttering NestJS controllers.",
   "main": "dist/index.js",
