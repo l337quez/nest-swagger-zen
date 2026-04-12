@@ -1,6 +1,6 @@
 # Nest Swagger Zen 🐼
 
-![Nest Swagger Zen Portada](./assets/nest-swagger-zen.png)
+![Nest Swagger Zen Portada](https://github.com/l337quez/nest-swagger-zen/raw/main/assets/nest-swagger-zen.png)
 
 Una librería genérica y estilizada para NestJS que te ayudará a limpiar tus controladores y modularizar la documentación de tu API de forma elegante. Con `nest-swagger-zen`, ya no tendrás que definir archivos pesados de configuración llenos de esquemas JSON.
 
