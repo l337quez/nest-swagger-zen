@@ -13,6 +13,15 @@ import { ApiParamOptions } from '@nestjs/swagger/dist/decorators/api-param.decor
 import { ApiQueryOptions } from '@nestjs/swagger/dist/decorators/api-query.decorator';
 
 /**
+ * Tipo auxiliar que representa un mapa de ejemplos nombrados para el body.
+ * Cada clave es el nombre del ejemplo visible en la UI de Swagger.
+ */
+export type ZenBodyExamples = Record<
+  string,
+  { value: any; summary?: string; description?: string }
+>;
+
+/**
  * Interface para la configuración esquematizada de Swagger.
  * Esto reemplaza la declaración manual de objetos JSON en tus módulos.
  */
@@ -43,6 +52,16 @@ export interface ZenSwaggerConfig {
   consumes?: string[];
   /** Si está en true, oculta completamente el endpoint de la interfaz de Swagger */
   exclude?: boolean;
+  /**
+   * Mapa de ejemplos nombrados para el body de la petición.
+   * Permite mostrar múltiples payloads de ejemplo en el Swagger UI sin tocar el controlador.
+   * @example
+   * bodyExamples: {
+   *   'Ejemplo Básico': { value: { title: 'Landing', settings: { theme: 'light' } } },
+   *   'Ejemplo Completo': { value: { title: 'Landing', settings: { theme: 'dark', showSidebar: true } } },
+   * }
+   */
+  bodyExamples?: ZenBodyExamples;
 }
 
 /**
@@ -107,8 +126,13 @@ export function ZenSwagger(config: ZenSwaggerConfig) {
   }
 
   // Configuración del Payload/Body
-  if (config.body) {
-    decorators.push(ApiBody({ type: config.body }));
+  if (config.body || config.bodyExamples) {
+    decorators.push(
+      ApiBody({
+        ...(config.body ? { type: config.body } : {}),
+        ...(config.bodyExamples ? { examples: config.bodyExamples } : {}),
+      }),
+    );
   }
 
   // Configuración opcional para tablas/datos paginados

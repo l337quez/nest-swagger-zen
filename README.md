@@ -95,6 +95,7 @@ La interfaz `ZenSwaggerConfig` que puedes enviarle a `@ZenSwagger()` soporta aba
 - `deprecated` *(boolean, opcional)*: Si se envía `true`, el endpoint aparecerá tachado en Swagger indicando que obsoleto.
 - `status` *(number, opcional)*: Código HTTP retornado al tener éxito (Default `200`).
 - `body` *(Type, opcional)*: Clase DTO para construir el modelo Swagger JSON del `body`.
+- `bodyExamples` *(ZenBodyExamples, opcional)*: Mapa de ejemplos nombrados para el body. Ideal para cuando el body es flexible (`any`) y quieres mostrar varios payloads de ejemplo sin tocar el controlador. Puede combinarse con `body`.
 - `response` *(Type, opcional)*: Clase DTO para construir el modelo Swagger JSON de la respuesta.
 - `example` *(any, opcional)*: Valor puro a renderizar como respuesta de ejemplo (para respuestas primitivas).
 - `isPaginated` *(boolean, opcional)*: Si se envía `true`, agrega automáticamente los parámetros `page` y `limit`.
@@ -103,3 +104,46 @@ La interfaz `ZenSwaggerConfig` que puedes enviarle a `@ZenSwagger()` soporta aba
 - `queries` *(array, opcional)*: Arreglo para mapear QueryStrings libres. Ej: `[{ name: 'search', required: false }]`.
 - `consumes` *(array de strings, opt)*: Útil para subida de archivos. Ej: `['multipart/form-data']`.
 - `exclude` *(boolean, opcional)*: Oculta el endpoint del UI de Swagger.
+
+## Ejemplos de Body Nombrados (`bodyExamples`) 📦
+
+Cuando el payload de un endpoint es dinámico o quieres mostrar distintos escenarios en el Swagger UI, usa `bodyExamples` junto con el tipo auxiliar `ZenBodyExamples`:
+
+```typescript
+// swagger/pages.swagger.ts
+import { ZenSwagger, ZenBodyExamples } from 'nest-swagger-zen';
+
+const createPageExamples: ZenBodyExamples = {
+  'Ejemplo Básico': {
+    value: {
+      title: 'Landing',
+      settings: { theme: 'light' }
+    }
+  },
+  'Ejemplo Completo': {
+    value: {
+      title: 'Landing',
+      settings: { theme: 'dark', showSidebar: true, retargeting: true }
+    }
+  }
+};
+
+export const CreatePageDocs = () => ZenSwagger({
+  summary: 'Create Page',
+  status: 201,
+  bodyExamples: createPageExamples,
+});
+```
+
+```typescript
+// pages.controller.ts
+import { CreatePageDocs } from './swagger/pages.swagger';
+
+@Post()
+@CreatePageDocs()
+create(@Body() body: any) {
+  // Controlador 100% limpio ✨
+}
+```
+
+> 💡 También puedes combinar `body` (para el schema/DTO) con `bodyExamples` al mismo tiempo.
