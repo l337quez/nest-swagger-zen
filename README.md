@@ -100,10 +100,40 @@ La interfaz `ZenSwaggerConfig` que puedes enviarle a `@ZenSwagger()` soporta aba
 - `example` *(any, opcional)*: Valor puro a renderizar como respuesta de ejemplo (para respuestas primitivas).
 - `isPaginated` *(boolean, opcional)*: Si se envía `true`, agrega automáticamente los parámetros `page` y `limit`.
 - `isBearerAuth` *(boolean, opcional)*: Si se envía `true`, añade el requerimiento del token JWT (`@ApiBearerAuth`).
+- `security` *(string, opcional)*: Nombre de tu esquema de seguridad configurado en el `DocumentBuilder` (ej. `'api_key'`).
+- `headers` *(array, opcional)*: Agrega cabeceras personalizadas requeridas para el endpoint (ej. `[{ name: 'x-api-key' }]`).
 - `params` *(array, opcional)*: Arreglo de objetos para documentar variables en la URL. Ej: `[{ name: 'id', description: 'ID de usuario' }]`.
 - `queries` *(array, opcional)*: Arreglo para mapear QueryStrings libres. Ej: `[{ name: 'search', required: false }]`.
-- `consumes` *(array de strings, opt)*: Útil para subida de archivos. Ej: `['multipart/form-data']`.
+- `consumes` *(array de strings, opt)*: Útil para forzar format nativos. Ej: `['application/x-www-form-urlencoded']`.
+- `fileUploads` *(objeto o array, opcional)*: Genera el esquema binario para subida de archivos (crea el botón "Seleccionar archivo") y auto-inyecta `multipart/form-data`.
 - `exclude` *(boolean, opcional)*: Oculta el endpoint del UI de Swagger.
+
+## Subida de Archivos (File Uploads) 📁
+
+Puedes usar la opción `fileUploads` para autogenerar inputs de tipo binario sin ensuciar tus DTOs:
+
+```typescript
+// Subir un único archivo
+export const UploadAvatarDocs = () => ZenSwagger({
+  summary: 'Subir un Avatar',
+  fileUploads: { name: 'avatar' } 
+});
+
+// Subir múltiples archivos en distintos campos
+export const UploadDocs = () => ZenSwagger({
+  summary: 'Subir Documentación',
+  fileUploads: [
+    { name: 'dni_front' },
+    { name: 'dni_back' }
+  ]
+});
+
+// Array de archivos en el mismo campo
+export const UploadGalleryDocs = () => ZenSwagger({
+  summary: 'Subir Galería',
+  fileUploads: { name: 'gallery', isArray: true }
+});
+```
 
 ## Ejemplos de Body Nombrados (`bodyExamples`) 📦
 
