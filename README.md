@@ -11,10 +11,10 @@ Una librería genérica y estilizada para **NestJS** que te ayudará a limpiar t
 
 ## Instalación 📦
 
-Al no estar en el registro público todavía, puedes instalar la librería en tus proyectos Nest referenciando rutas relativas o absolutas:
+Instala la librería en tu proyecto NestJS mediante NPM (u otro gestor de paquetes):
 
 ```bash
-npm install nest-swagger-zen
+npm install @l337quez/nest-swagger-zen
 ```
 
 
@@ -29,7 +29,7 @@ Crea tus clases para Request (**Body**) o para la respuesta (**Response**) usand
 
 ```typescript
 // dto/user.dto.ts
-import { ZenProperty, ZenPropertyOptional } from 'nest-swagger-zen';
+import { ZenProperty, ZenPropertyOptional } from '@l337quez/nest-swagger-zen';
 
 export class CreateUserDto {
   @ZenProperty({ example: 'juan@cliente.com', description: 'Correo electrónico' })
@@ -53,7 +53,7 @@ La idea de esta librería es que tu controlador quede **100% libre de configurac
 
 ```typescript
 // swagger/user.swagger.ts
-import { ZenSwagger } from 'nest-swagger-zen';
+import { ZenSwagger } from '@l337quez/nest-swagger-zen';
 import { CreateUserDto, UserResponseDto } from '../dto/user.dto';
 
 // Creas una constante que ya contiene el decorador listo
@@ -141,7 +141,7 @@ Cuando el payload de un endpoint es dinámico o quieres mostrar distintos escena
 
 ```typescript
 // swagger/pages.swagger.ts
-import { ZenSwagger, ZenBodyExamples } from 'nest-swagger-zen';
+import { ZenSwagger, ZenBodyExamples } from '@l337quez/nest-swagger-zen';
 
 const createPageExamples: ZenBodyExamples = {
   'Ejemplo Básico': {
