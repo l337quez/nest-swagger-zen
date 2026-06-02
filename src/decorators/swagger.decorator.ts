@@ -8,9 +8,12 @@ import {
   ApiBearerAuth,
   ApiConsumes,
   ApiExcludeEndpoint,
+  ApiSecurity,
+  ApiHeader,
 } from '@nestjs/swagger';
 import { ApiParamOptions } from '@nestjs/swagger/dist/decorators/api-param.decorator';
 import { ApiQueryOptions } from '@nestjs/swagger/dist/decorators/api-query.decorator';
+import { ApiHeaderOptions } from '@nestjs/swagger/dist/decorators/api-header.decorator';
 
 /**
  * Tipo auxiliar que representa un mapa de ejemplos nombrados para el body.
@@ -20,6 +23,16 @@ export type ZenBodyExamples = Record<
   string,
   { value: any; summary?: string; description?: string }
 >;
+
+/**
+ * Interface para definir de forma rápida campos de subida de archivos
+ */
+export interface ZenFileUpload {
+  /** Nombre del campo en el formulario (ej: 'file', 'avatar') */
+  name: string;
+  /** Si es true, acepta múltiples archivos en ese mismo campo */
+  isArray?: boolean;
+}
 
 /**
  * Interface para la configuración esquematizada de Swagger.
@@ -44,12 +57,22 @@ export interface ZenSwaggerConfig {
   isPaginated?: boolean;
   /** Documenta si este endpoint requiere envío de token de Autorización (JWT Bearer Auth) */
   isBearerAuth?: boolean;
+  /** Nombre de un esquema de seguridad configurado en tu DocumentBuilder (ej. 'api_key' o 'header_auth') */
+  security?: string;
+  /** Arreglo para definir cabeceras personalizadas necesarias para la petición (ej. x-api-key, Authorization) */
+  headers?: ApiHeaderOptions[];
   /** Arreglo para definir parámetros de ruta explícitos (e.g. /:id) */
   params?: ApiParamOptions[];
   /** Arreglo para definir variables libres que viajen por Query string (?foo=bar) */
   queries?: ApiQueryOptions[];
   /** Tipos de contenido que acepta (ej: ['multipart/form-data'] para archivos) */
   consumes?: string[];
+  /** 
+   * Facilita la configuración de subida de archivos para Swagger UI.
+   * Genera el esquema necesario para mostrar los botones de "Seleccionar archivo".
+   * Nota: Esto inyectará 'multipart/form-data' en `consumes` automáticamente.
+   */
+  fileUploads?: ZenFileUpload | ZenFileUpload[];
   /** Si está en true, oculta completamente el endpoint de la interfaz de Swagger */
   exclude?: boolean;
   /**
@@ -89,6 +112,22 @@ export function ZenSwagger(config: ZenSwaggerConfig) {
   if (config.isBearerAuth) {
     decorators.push(ApiBearerAuth());
   }
+  if (config.security) {
+    decorators.push(ApiSecurity(config.security));
+  }
+
+  // Headers (por ejemplo para Authorization sin bearer, x-api-key, etc.)
+  if (config.headers && config.headers.length > 0) {
+    config.headers.forEach((header) => decorators.push(ApiHeader(header)));
+  }
+
+  // File Uploads (Aseguramos consumes antes de procesarlo)
+  if (config.fileUploads) {
+    if (!config.consumes) config.consumes = [];
+    if (!config.consumes.includes('multipart/form-data')) {
+      config.consumes.push('multipart/form-data');
+    }
+  }
 
   // Content Types / Uploads
   if (config.consumes && config.consumes.length > 0) {
@@ -125,8 +164,31 @@ export function ZenSwagger(config: ZenSwaggerConfig) {
     );
   }
 
-  // Configuración del Payload/Body
-  if (config.body || config.bodyExamples) {
+  // Configuración del Payload/Body (o File Uploads)
+  if (config.fileUploads) {
+    const uploads = Array.isArray(config.fileUploads) ? config.fileUploads : [config.fileUploads];
+    const properties: Record<string, any> = {};
+
+    uploads.forEach((upload) => {
+      if (upload.isArray) {
+        properties[upload.name] = {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+        };
+      } else {
+        properties[upload.name] = { type: 'string', format: 'binary' };
+      }
+    });
+
+    decorators.push(
+      ApiBody({
+        schema: {
+          type: 'object',
+          properties,
+        },
+      }),
+    );
+  } else if (config.body || config.bodyExamples) {
     decorators.push(
       ApiBody({
         ...(config.body ? { type: config.body } : {}),
